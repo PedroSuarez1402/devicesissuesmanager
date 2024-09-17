@@ -1,6 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { element } from 'prop-types'
 import React from 'react'
 import PrivateRoute from './components/PrivateRoute'
+import { Navigate } from 'react-router-dom'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -60,8 +62,8 @@ const FormIssues = React.lazy(() => import('./views/issues/FormIssues'))
 const Issue = React.lazy(() => import('./views/issues/Issue'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/', exact: true, name: 'Home', element: () => <Navigate to="/login" replace /> },
+  { path: '/dashboard', name: 'Dashboard', element: () => (<PrivateRoute roles={['admin' , 'student']}> <Dashboard/> </PrivateRoute> ),},
   // eslint-disable-next-line prettier/prettier
   {
     path: '/users',
@@ -72,11 +74,51 @@ const routes = [
       </PrivateRoute>
     ),
   },
-  { path: '/rooms', name: 'Rooms', element: Rooms },
-  { path: '/devices', name: 'Devices', element: Devices },
-  { path: '/issues', name: 'Issues', element: Issues, exact: true },
-  { path: '/issues/create-issues', name: 'Create Issues', element: FormIssues, exact: true },
-  { path: '/issues/view-issue/:id', name: 'View Issue', element: Issue, exact: true },
+  {
+    path: '/rooms',
+    name: 'Rooms',
+    element: () => (
+      <PrivateRoute roles={['admin', 'student']}>
+        <Rooms />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: '/devices',
+    name: 'Devices',
+    element: () => (
+      <PrivateRoute roles={['admin', 'student']}>
+        <Devices />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: '/issues',
+    name: 'Issues',
+    element: () => (
+      <PrivateRoute roles={['admin', 'student']}>
+        <Issues />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: '/issues/create-issues',
+    name: 'Create Issues',
+    element: () => (
+      <PrivateRoute roles={['admin', 'student']}>
+        <FormIssues />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: '/issues/view-issue/:id',
+    name: 'View Issue',
+    element: () => (
+      <PrivateRoute roles={['admin', 'student']}>
+        <Issue />
+      </PrivateRoute>
+    ),
+  },
 
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },

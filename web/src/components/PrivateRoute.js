@@ -5,8 +5,9 @@ import { Navigate } from "react-router-dom";
 // eslint-disable-next-line react/prop-types
 const PrivateRoute = ({children, roles}) => {
     const user = JSON.parse(localStorage.getItem('user'))
+    const token = localStorage.getItem('token') // Verifica también el token
 
-    if(!user){
+    if(!user || !token){
         return <Navigate to="/login" replace/>
     }
     // eslint-disable-next-line react/prop-types
