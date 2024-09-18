@@ -2,6 +2,9 @@
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+/* configuracion del dotenv */
+dotenv.config()
 /* Rutas */
 import routes from './routes/index.js'
 import bodyParser from 'body-parser'
@@ -16,6 +19,8 @@ mongoose.connect('mongodb://localhost:27017/incidencia_equipos', {
 .catch(err => console.error('Error al conectar a MongoDB: ', err))
 
 const app = express();// Creación de una instancia de la aplicación Express
+
+
 
 app.use(bodyParser.json()); // Middleware para el manejo de datos en formato JSON
 app.use(bodyParser.urlencoded({extended:true}))

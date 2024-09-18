@@ -9,7 +9,9 @@ const authMiddleware = (roles = []) => {
             return res.status(401).json({message: 'Acceso no autorizado'});
         }
         try {
-            const decoded = jwt.verify(token, 'LLAVESECRETA');
+            /* console.log('La llave secreta es:', process.env.KEY); */
+
+            const decoded = jwt.verify(token, process.env.KEY);
             req.user = await User.findById(decoded.id);
 
             if(!req.user || (roles.length && !roles.includes(req.user.role))){
