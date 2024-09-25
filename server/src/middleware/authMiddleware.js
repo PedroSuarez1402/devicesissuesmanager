@@ -10,9 +10,8 @@ const authMiddleware = (roles = []) => {
         }
         try {
             /* console.log('La llave secreta es:', process.env.KEY); */
-
             const decoded = jwt.verify(token, process.env.KEY);
-            req.user = await User.findById(decoded.id);
+            req.user = await User.findById(decoded.id).select('role');
 
             if(!req.user || (roles.length && !roles.includes(req.user.role))){
                 return res.status(403).json({message: 'No tienes permiso para realizar esta accion'})
