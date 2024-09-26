@@ -12,7 +12,7 @@ const loginUser = async (req, res) => {
             return res.status(401).json({message: 'Credenciales incorrectas'})
         }
 
-        const token = jwt.sign({id: user._id, role: user.role}, 'LLAVESECRETA', {
+        const token = jwt.sign({id: user._id, role: user.role}, process.env.KEY, {
             expiresIn: '1h'
         });
         res.json({token, user})
@@ -23,7 +23,7 @@ const loginUser = async (req, res) => {
 const getMe = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
-        console.log(user)
+        
         res.json(user)
         
     } catch (error) {

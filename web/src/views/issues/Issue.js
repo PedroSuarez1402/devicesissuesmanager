@@ -22,7 +22,23 @@ const Issue = () => {
   const [note, setNote] = useState('')
   const [status, setStatus] = useState('')
   const [devicesStatus, setDevicesStatus] = useState('')
-  const user = JSON.parse(localStorage.getItem('user'))
+  const [role, setRole] = useState(null);
+    
+  const fetchUserRole = async () => {
+      try {
+          const token = localStorage.getItem('token');
+          if(token){
+              const response = await clienteAxios.get('/auth/me', {
+                  headers: {
+                      Authorization: `Bearer ${token}`
+                  },
+              });
+              setRole(response.data.role);
+          }
+      } catch (error) {
+          console.error('Error fetching user role:', error);
+      }
+  }
 
   const fetchIssue = async () => {
     try {
@@ -34,6 +50,7 @@ const Issue = () => {
     }
   }
   useEffect(() => {
+    fetchUserRole()
     fetchIssue()
   }, [id])
 
@@ -138,7 +155,7 @@ const Issue = () => {
                       </CCardHeader>
                       <CCardBody>
                         <CCardText>{note.content}</CCardText>
-                        {user.role === 'admin' && (
+                        {role === 'admin' && (
                           <>
                             <CButton
                               color="warning"
@@ -166,7 +183,7 @@ const Issue = () => {
               </div>
             )}
 
-            {status === 'Open' && user.role === 'admin' && (
+            {status === 'Open' && role === 'admin' && (
               <CForm>
                 <CFormTextarea
                   value={note}
@@ -178,7 +195,7 @@ const Issue = () => {
                 </CButton>
               </CForm>
             )}
-            {status === 'Open' && user.role === 'admin' && (
+            {status === 'Open' && role === 'admin' && (
               <CButton
                 color="success"
                 onClick={handleCloseIssue}
@@ -189,7 +206,7 @@ const Issue = () => {
               </CButton>
             )}
             {/* Botón para reabrir issue, visible solo si está cerrada y el usuario es admin */}
-            {status === 'Closed' && user.role === 'admin' && (
+            {status === 'Closed' && role === 'admin' && (
               <CButton
                 color="danger"
                 onClick={handleReopenIssue}

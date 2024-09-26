@@ -12,8 +12,23 @@ const Rooms = () => {
     const [selectedRoom, setSelectedRoom] = useState(null)
     const [isEditing, setIsEditing] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false);
-    const user = JSON.parse(localStorage.getItem("user"))
+    const [role, setRole] = useState(null);
 
+    const fetchUserRole = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if(token){
+                const response = await clienteAxios.get('/auth/me', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
+                setRole(response.data.role);
+            }
+        } catch (error) {
+            console.error('Error fetching user role:', error);
+        }
+    }
     const fetchRooms = async () => {
         try {
             const response = await clienteAxios.get('/rooms')
@@ -24,7 +39,7 @@ const Rooms = () => {
         }
     }
     useEffect(() => {
-        
+        fetchUserRole()
         fetchRooms()
     }, [])
     const handleSaveRoom = () => {
@@ -46,7 +61,7 @@ const Rooms = () => {
             <CCol xs={12}>
                 <CCard>
                     <CCardHeader><strong>Rooms</strong>
-                    {user.role === 'admin' && (
+                    {role === 'admin' && (
                         <>
                         <CButton color="primary" style={{float: 'right'}} onClick={() => setIsEditing(true)}>
                             Create Room
@@ -58,7 +73,7 @@ const Rooms = () => {
                     <CCardBody>
                     <SearchAndPagination
                             data={rooms}
-                            itemsPerPage={5}
+                            itemsPerPage={6}
                             onFilter={(filteredData) => setFilteredRoom(filteredData)}
                         />
                         <CRow>
@@ -75,7 +90,7 @@ const Rooms = () => {
                                             <p><strong>Categoria: </strong>{room.categoria}</p>
                                         </CCardBody>
                                         <CCardFooter>
-                                            {user.role === 'admin' && (
+                                            {role === 'admin' && (
                                                 <>
                                                 <CButton color="primary" style={{marginRight: '10px'}} onClick={() => {setSelectedRoom(room); setIsEditing(true)}}>Edit</CButton>
                                                 <CButton color="danger" className="text-white" onClick={() =>{setSelectedRoom(room); setIsDeleting(true)}}>Delete</CButton>

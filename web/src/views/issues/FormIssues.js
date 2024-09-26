@@ -11,6 +11,7 @@ const FormIssues = () => {
     const [status, setStatus] = useState('')
     const [devices, setDevices] = useState([]);
     const [selectedDevice, setSelectedDevice] = useState(null)
+    const [user, setUser] = useState(null)
     const navigate = useNavigate()
 
     const fetchDevices = async() => {
@@ -21,9 +22,19 @@ const FormIssues = () => {
             console.error('Error fetching devices:', error);
         }
     }
+    // Solicitar los datos del usuario a /auth/me
+    const fetchUser = async () => {
+        try {
+            const response = await clienteAxios.get('/auth/me');
+            setUser(response.data); // Guardar la información del usuario
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
 
     useEffect(() => {
-        fetchDevices()
+        fetchDevices();
+        fetchUser();
     },[])
 
     const handleDeviceChange = (e) => {
@@ -34,7 +45,9 @@ const FormIssues = () => {
     }
     const handleSubmit = async () => {
         try {
-            const user = JSON.parse(localStorage.getItem('user', 'token'));
+            if (!user) {
+                throw new Error('User not loaded yet');
+            }
             
             const issueData = {
                 type,
@@ -44,7 +57,6 @@ const FormIssues = () => {
                 deviceId: selectedDevice._id,
                 creatorId: user._id,
             };
-            console.log(issueData)
     
             await clienteAxios.post('/issues', issueData);
     

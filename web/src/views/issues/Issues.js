@@ -9,7 +9,6 @@ const Issues = () => {
     const [issues, setIssues] = useState([]); // Estado para todas las issues
     const [filteredIssues, setFilteredIssues] = useState([]); // Estado para las issues filtradas
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem("user"));
 
     const fetchIssues = async () => {
         try {
@@ -26,12 +25,12 @@ const Issues = () => {
     }, []);
 
     return (
-        <CRow>
+        <CRow className="g-3">
             <CCol xs={12}>
                 <CCard>
-                    <CCardHeader>
+                    <CCardHeader className="d-flex justify-content-between align-items-center">
                         <strong>Issues</strong>
-                        <CButton color="primary" style={{ float: 'right' }} onClick={() => navigate('/issues/create-issues')}>
+                        <CButton color="primary" onClick={() => navigate('/issues/create-issues')}>
                             Create Issue
                         </CButton>
                     </CCardHeader>
@@ -39,15 +38,15 @@ const Issues = () => {
                         {/* Componente de búsqueda y paginación */}
                         <SearchAndPagination
                             data={issues} // Pasamos la lista completa de issues
-                            itemsPerPage={5} // Paginación con 5 items por página
+                            itemsPerPage={8} // Paginación con 5 items por página
                             onFilter={(filteredData) => setFilteredIssues(filteredData)} // Actualizar el estado de issues filtradas
                         />
-                        <CRow>
+                        <CRow className="g-3">
                             {filteredIssues.map((issue) => ( // Usar filteredIssues en lugar de issues
-                                <CCol xs={12} sm={6} md={4} key={issue._id}>
-                                    <CCard style={{ marginBottom: '10px' }}>
+                                <CCol xs={12} sm={6} md={4} lg={3} key={issue._id}>
+                                    <CCard className="h-100">
                                         <CCardHeader>
-                                            <h6>Created by: {issue.creator.name}</h6>
+                                            <h6 className="mb-2">Created by: {issue.creator.name}</h6>
                                         </CCardHeader>
                                         <CCardBody>
                                             <CCardTitle>
@@ -71,7 +70,6 @@ const Issues = () => {
                                                                 <strong>Responsible:</strong> {management.responsible.name} <br />
                                                                 <strong>Description:</strong> {management.description || 'No description'} <br />
                                                                 <strong>Start Date:</strong> {new Date(management.startDate).toLocaleDateString()} <br />
-                                                                {/* Corregir la expresión para la fecha de finalización */}
                                                                 {management.endDate && (
                                                                     <>
                                                                         <strong>End Date:</strong> {new Date(management.endDate).toLocaleDateString()} <br />
@@ -85,7 +83,7 @@ const Issues = () => {
                                             )}
                                         </CCardBody>
                                         <CCardFooter>
-                                            <CButton color="primary" style={{ float: 'right' }} onClick={() => navigate(`/issues/view-issue/${issue._id}`)}>
+                                            <CButton color="primary" className="w-100" onClick={() => navigate(`/issues/view-issue/${issue._id}`)}>
                                                 View
                                             </CButton>
                                         </CCardFooter>

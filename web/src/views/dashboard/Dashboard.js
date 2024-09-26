@@ -1,8 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React,{useEffect, useState} from 'react'
-
 import { CCol, CRow} from '@coreui/react'
-
 import clienteAxios from '../../config/axios'
 
 import WidgetsDropdown from '../widgets/WidgetsDropdown'

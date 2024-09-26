@@ -11,7 +11,7 @@ import bodyParser from 'body-parser'
 
 /* Conexion a la base de datos */
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/incidencia_equipos', {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -29,7 +29,8 @@ app.use(cors())
 /* Configuracion de las rutas */
 routes(app)
 
+const port = process.env.PORT || 5001;
 /* Inicio del servidor */
-app.listen(5000, () => {
-  console.log('Servidor escuchando en el puerto 5000');
+app.listen(port, () => {
+  console.log(`Servidor escuchado en el puerto: ${port}`);
 });

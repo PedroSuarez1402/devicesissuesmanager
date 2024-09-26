@@ -13,8 +13,23 @@ const Devices = () => {
     const [selectedDevice, setSelectedDevice] = useState(null);
     const [isEditing, setIsEditing] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false);
-    const user = JSON.parse(localStorage.getItem("user"));
+    const [role, setRole] = useState(null);
     
+    const fetchUserRole = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if(token){
+                const response = await clienteAxios.get('/auth/me', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
+                setRole(response.data.role);
+            }
+        } catch (error) {
+            console.error('Error fetching user role:', error);
+        }
+    }
     const fetchDevices = async () => {
         try {
             const response = await clienteAxios.get('/devices');
@@ -25,8 +40,8 @@ const Devices = () => {
         }
     }
     useEffect(() => {
-        
-        fetchDevices()
+        fetchUserRole();
+        fetchDevices();
     }, [])
     const handleSaveDevice = () => {
         setSelectedDevice(null);
@@ -48,7 +63,7 @@ const Devices = () => {
                 <CCard>
                     <CCardHeader>
                         <strong>Devices</strong>
-                        {user.role === 'admin' && (
+                        {role === 'admin' && (
                             <>
                                 <CButton color="primary" style={{ float: 'right' }} onClick={() => setIsEditing(true)}>
                                 Create Device
@@ -79,7 +94,7 @@ const Devices = () => {
                                             )}
                                         </CCardBody>
                                         <CCardFooter>
-                                            {user.role === 'admin' && (
+                                            {role === 'admin' && (
                                                 <>
                                                     <CButton color="primary" style={{ marginRight: '10px' }} onClick={() => {
                                                     setSelectedDevice(device);

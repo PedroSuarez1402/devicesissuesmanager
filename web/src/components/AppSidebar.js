@@ -16,6 +16,7 @@ import { sygnet } from 'src/assets/brand/sygnet'
 
 // Importar la función que genera los ítems de navegación
 import generateNav from '../_nav'
+import clienteAxios from '../config/axios'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
@@ -26,10 +27,20 @@ const AppSidebar = () => {
 
   // Cargar el rol del usuario dinámicamente desde localStorage
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    if (user && user.role) {
-      setRole(user.role)
+    const fetchUserRole = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        if (token) {
+          const response = await clienteAxios.get('/auth/me', {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          setRole(response.data.role)
+        }
+      } catch (error) {
+        console.error('Error en el fetching user Role:', error)
+      }
     }
+    fetchUserRole()
   }, [])
 
   return (
